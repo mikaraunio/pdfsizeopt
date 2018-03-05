@@ -1,3 +1,6 @@
+This fork adds support for stdout output by specifying '-' as the output
+file name.
+
 README for pdfsizeopt
 ^^^^^^^^^^^^^^^^^^^^^
 pdfsizeopt is a program for converting large PDF files to small ones. More

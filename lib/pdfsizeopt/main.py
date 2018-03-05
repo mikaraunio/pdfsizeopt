@@ -9032,7 +9032,10 @@ class PdfData(object):
          FormatPercent(output_size, self.file_size)))
     if output_size > self.file_size:
       LogWarning('optimized PDF larger than original')
-    f = open(file_name, 'wb')
+    if file_name == '-':
+      f = sys.stdout
+    else:
+      f = open(file_name, 'wb')
     try:
       f.write(jobs[0][3])
     finally:
@@ -9456,9 +9459,10 @@ def main(argv, script_dir=None, zip_file=None):
       not f.do_decompress_most_streams and
       multivalent_compress_command is None):
     pdf.CompressUncompressedStreams()
+  use_stdout = (output_file_name == '-')
   pdf.Save(
-      output_file_name + '.tmp',
-      display_file_name=output_file_name,
+      use_stdout and '-' or output_file_name + '.tmp',
+      display_file_name=use_stdout and 'stdout' or output_file_name,
       multivalent_compress_command=multivalent_compress_command,
       do_update_file_meta=True,
       do_escape_images_from_multivalent=f.do_escape_images_from_multivalent,
@@ -9466,4 +9470,5 @@ def main(argv, script_dir=None, zip_file=None):
       do_generate_object_stream=f.do_generate_object_stream,
       is_flate_ok=(f.do_compress_uncompressed_streams and
                    not f.do_decompress_most_streams))
-  Rename(output_file_name + '.tmp', output_file_name)
+  if not use_stdout:
+      Rename(output_file_name + '.tmp', output_file_name)
